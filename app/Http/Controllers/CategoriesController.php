@@ -14,7 +14,7 @@ class CategoriesController extends Controller
      */
     public function index()//: Response
     {
-        $categories = Category::all();
+        $categories = Category::all(); // Category::paginate(3)
         return response()->json([
             'categories' => $categories,
         ]);
@@ -55,13 +55,13 @@ class CategoriesController extends Controller
     public function update(Request $request, Category $category)//: RedirectResponse
     {
         $request->validate([
-            'name' => ['required', 'string', 'unique:categories,name'],
+            'name' => ['required', 'string', 'unique:categories,name,' . $category->id],
         ]);
-        // $category = $request;
-        // $category->save(); // save to db
-        // return response()->json([
-        //     'category' => $category,
-        // ]);
+        $category->name = $request->name;
+        $category->save(); // save to db
+        return response()->json([
+            'category' => $category,
+        ]);
     }
 
     /**
@@ -69,6 +69,9 @@ class CategoriesController extends Controller
      */
     public function destroy(Category $category)//: RedirectResponse
     {
-        //
+        $category->delete();
+        return response()->json([
+            'success' => true,
+        ]);
     }
 }
