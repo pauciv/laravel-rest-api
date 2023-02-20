@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePostRequest;
+use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,23 +16,33 @@ class PostsController extends Controller
      */
     public function index()//: Response
     {
-        $posts = Post::all();
+        // hace el load('category') que hacemos en el show pero en todos los posts.
+        $posts = Post::with('category')->get(); // $posts = Post::all();
         return response()->json([
             "posts" => $posts,
         ]);
     }
 
+    public function postsByCategory(Category $category)
+    {
+        // $posts = Post::where('category_id', $category->id)
+        //     ->orderBy('published_at', 'DESC') // orderByDesc
+        //     ->get();
+        // return $posts;
+
+        //! con relaciones de eloquent (definimos la relación dentro del modelo y lo podemos llamar)
+        // return $category->posts()->get(); // laravel lo ejecuta por nosotros
+        return $category->posts;
+
+        // return $category->posts()->paginate(10);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)//: RedirectResponse
+    public function store(StorePostRequest $request)//: RedirectResponse
     {
-        $validated = $request->validate([
-            "title" => ['required', 'string', 'min:8'],
-            "content" => ['required', 'string', 'min:100'],
-            "published_at" => ['required', 'date'],
-            "category_id" => ['required', 'exists:categories,id'],
-        ]);
+        $validated = $request->validated();
 
         $post = Post::create($validated);
         return response()->json([
@@ -43,6 +55,7 @@ class PostsController extends Controller
      */
     public function show(Post $post)//: Response
     {
+        $post->load('category');
         return response()->json([
             'post' => $post,
         ]);
@@ -51,9 +64,17 @@ class PostsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Post $post)//: RedirectResponse
+    public function update(StorePostRequest $request, Post $post)//: RedirectResponse
     {
-        //
+        // si vamos a hacer patch, los campos no van a ser obligatorios mientras que si hacemos put sí.
+        // sometimes significa que si no está, no pasa nada, y si sí que está, lo va a validar con el resto de reglas.
+        $validated = $request->validated();
+
+        // dd($validated); // console.log
+        $post->update($validated);
+        return response()->json([
+            'post' => $post,
+        ]);
     }
 
     /**
@@ -61,6 +82,9 @@ class PostsController extends Controller
      */
     public function destroy(Post $post)//: RedirectResponse
     {
-        //
+        $post->delete();
+        return response()->json([
+            "success" => true,
+        ]);
     }
 }
