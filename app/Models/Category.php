@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    use HasFactory;
+    use HasFactory; // por defecto los modelos ya se crean con esta clase.
 
     protected $fillable = [
         'name',

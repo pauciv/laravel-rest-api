@@ -16,7 +16,7 @@ class CategoriesController extends Controller
     {
         // $this->middleware('nombredelmiddleware'); // lo normal es ponerlo en api.php
         // si una category no tiene posts, no va a aparecer.
-        $categories = Category::whereHas('posts')->get(); // Category::all() // Category::paginate(3)
+        $categories = Category::all(); // Category::whereHas('posts')->get(); // Category::paginate(3)
         return response()->json([
             'categories' => $categories,
         ]);
