@@ -58,6 +58,7 @@ class PostsController extends Controller
     public function show(Post $post)//: Response
     {
         $post->load('category');
+
         return response()->json([
             'post' => $post,
         ]);
