@@ -28,4 +28,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::apiResource('categories', CategoriesController::class);
 Route::apiResource('posts', PostsController::class);
-Route::get('/categories/{category}/posts', [PostsController::class, 'postsByCategory']);
+Route::get('/categories/{category}/posts', [PostsController::class, 'postsByCategory']); // ->middleware('nombredelmiddleware');

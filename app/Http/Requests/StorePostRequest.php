@@ -11,6 +11,7 @@ class StorePostRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        // aquí también podemos comprovar algo (es como un middleware)
         return true;
     }
 
