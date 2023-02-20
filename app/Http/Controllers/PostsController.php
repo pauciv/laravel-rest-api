@@ -32,7 +32,9 @@ class PostsController extends Controller
 
         //! con relaciones de eloquent (definimos la relación dentro del modelo y lo podemos llamar)
         // return $category->posts()->get(); // laravel lo ejecuta por nosotros
-        return $category->posts;
+        return response()->json([
+            "posts" => $category->posts,
+        ]);
 
         // return $category->posts()->paginate(10);
     }
